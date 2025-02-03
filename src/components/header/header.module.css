@@ -27,4 +27,8 @@
   color: #fff;
   z-index: 1;
   padding: 60px 0;
+
+  @media screen and (max-width: 800px) {
+    font-size: 3rem;
+  }
 }

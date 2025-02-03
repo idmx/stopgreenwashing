@@ -1,0 +1,54 @@
+.mainBlock,
+.article {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mainBlock {
+  margin-top: 20px;
+  background-color: rgba(136, 220, 186, 0.596);
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.sectionHeader {
+  font-size: 1.625rem;
+  color: #a98b69;
+  font-weight: bold;
+}
+
+.link {
+  color: black;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.link:hover {
+  opacity: 0.8;
+}
+
+.text {
+  font-size: 1.2rem;
+  letter-spacing: 0.2px;
+  line-height: 1.5rem;
+}
+
+.image {
+  max-width: 400px;
+  width: 100%;
+  border-radius: 8px;
+  float: right;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 0 0 20px;
+  margin: 0;
+}
+
+.listItem {
+  font-size: 1.2rem;
+}
