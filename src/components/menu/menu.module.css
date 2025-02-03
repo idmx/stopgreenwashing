@@ -4,6 +4,8 @@
   justify-content: space-between;
   padding: 16px;
   z-index: 1;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
 .logo,
@@ -12,16 +14,36 @@
   cursor: pointer;
 }
 
-.rightSide {
+.rightSide,
+.leftSide {
   display: flex;
   gap: 24px;
+}
+
+.rightSide {
+  @media screen and (max-width: 780px) {
+    display: none;
+  }
+}
+
+.burgerButton {
+  display: none;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  color: #fff;
+
+  @media screen and (max-width: 780px) {
+    display: block;
+  }
 }
 
 .menuItem {
   font-size: 16px;
 }
 
-.menuItem:hover {
+.menuItem:hover,
+.burgerButton:hover {
   opacity: 0.8;
 }
 
