@@ -1,0 +1,30 @@
+.menu {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  z-index: 1;
+}
+
+.logo,
+.menuItem {
+  color: #fff;
+  cursor: pointer;
+}
+
+.rightSide {
+  display: flex;
+  gap: 24px;
+}
+
+.menuItem {
+  font-size: 16px;
+}
+
+.menuItem:hover {
+  opacity: 0.8;
+}
+
+.logo {
+  font-size: 24px;
+}

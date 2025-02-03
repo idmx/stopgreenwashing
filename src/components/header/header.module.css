@@ -1,0 +1,30 @@
+.header {
+  height: 340px;
+  background: url("../../assets/header.png");
+  background-size: cover;
+  background-color: rgb(136, 220, 187);
+}
+
+.overlay::before {
+  background-color: rgb(33, 33, 33);
+  opacity: 0.4;
+  display: block;
+  bottom: 0;
+  content: "";
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 340px;
+  z-index: 0;
+}
+
+.title {
+  position: relative;
+  font-size: 5.3rem;
+  text-align: center;
+  color: #fff;
+  z-index: 1;
+  padding: 60px 0;
+}
