@@ -7,9 +7,15 @@ export const HandbookPage = () => {
     <div className={styles.cards}>
       {catalogMarks.map((item, index) => (
         <HandbookCard
+          key={index}
           country={item.country}
           id={index}
-          src={`src/assets/marks/Picture${index + 1}.png`}
+          src={String(
+            new URL(
+              `../../assets/marks/Picture${index + 1}.png`,
+              import.meta.url
+            )
+          )}
           title={item.title}
         />
       ))}
