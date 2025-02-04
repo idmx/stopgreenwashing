@@ -25,7 +25,10 @@ export const Slider: FC<SliderProps> = ({ items, isOpen, onClose }) => {
         {items.map((item) => (
           <div
             key={item.title}
-            onClick={item.cb}
+            onClick={() => {
+              item.cb();
+              onClose();
+            }}
             className={cn(styles.item, {
               [styles.active]: item.isActive,
               [styles.isOpenItem]: isOpen,

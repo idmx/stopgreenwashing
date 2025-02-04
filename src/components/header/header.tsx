@@ -13,6 +13,8 @@ export const Header = () => {
         return "Справочник";
       case "/scanner":
         return "Сканер";
+      case pathname.match(/\/handbook\/\d/)?.[0]:
+        return "Маркировка";
       default:
         return "stop greenwashing";
     }

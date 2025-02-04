@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./index.css";
 import { MainPage } from "./pages/main-page";
 import { Layout } from "./components/layout";
+import { HandbookPage } from "./pages/handbook-page";
 
 const App: React.FC = () => {
   return (
@@ -11,7 +12,7 @@ const App: React.FC = () => {
       <Layout>
         <Routes>
           <Route path="/" element={<MainPage />} />
-          <Route path="/handbook" element={<MainPage />} />
+          <Route path="/handbook" element={<HandbookPage />} />
           <Route path="/scanner" element={<MainPage />} />
         </Routes>
       </Layout>
