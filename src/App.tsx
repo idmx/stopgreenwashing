@@ -5,6 +5,7 @@ import "./index.css";
 import { MainPage } from "./pages/main-page";
 import { Layout } from "./components/layout";
 import { HandbookPage } from "./pages/handbook-page";
+import { MarkCard } from "./components/mark-card";
 
 const App: React.FC = () => {
   return (
@@ -13,6 +14,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/handbook" element={<HandbookPage />} />
+          <Route path="/handbook/:id" element={<MarkCard />} />
           <Route path="/scanner" element={<MainPage />} />
         </Routes>
       </Layout>
