@@ -6,6 +6,7 @@ import { MainPage } from "./pages/main-page";
 import { Layout } from "./components/layout";
 import { HandbookPage } from "./pages/handbook-page";
 import { MarkCard } from "./components/mark-card";
+import { Scanner } from "./components/scanner";
 
 const App: React.FC = () => {
   return (
@@ -15,7 +16,7 @@ const App: React.FC = () => {
           <Route path="/" element={<MainPage />} />
           <Route path="/handbook" element={<HandbookPage />} />
           <Route path="/handbook/:id" element={<MarkCard />} />
-          <Route path="/scanner" element={<MainPage />} />
+          <Route path="/scanner" element={<Scanner />} />
         </Routes>
       </Layout>
     </BrowserRouter>
