@@ -45,116 +45,116 @@ export const Scanner = () => {
     }
   };
 
-  const filterMatchesWithRANSAC = (
-    keyPoints1: cv.DMatchVector,
-    keyPoints2: cv.DMatchVector,
-    matches: cv.DMatchVector
-  ) => {
-    // Проверяем, достаточно ли совпадений для вычисления гомографии
-    if (matches.size() < 4) {
-      console.error("Not enough matches to compute homography.");
-      return matches; // Возвращаем все совпадения, если их меньше 4
-    }
+  //   const filterMatchesWithRANSAC = (
+  //     keyPoints1: cv.DMatchVector,
+  //     keyPoints2: cv.DMatchVector,
+  //     matches: cv.DMatchVector
+  //   ) => {
+  //     // Проверяем, достаточно ли совпадений для вычисления гомографии
+  //     if (matches.size() < 4) {
+  //       console.error("Not enough matches to compute homography.");
+  //       return matches; // Возвращаем все совпадения, если их меньше 4
+  //     }
 
-    try {
-      // Собираем точки из ключевых точек
-      const points1 = [];
-      const points2 = [];
-      for (let i = 0; i < matches.size(); i++) {
-        const match = matches.get(i);
-        const pt1 = keyPoints1.get(match.queryIdx).pt;
-        const pt2 = keyPoints2.get(match.trainIdx).pt;
+  //     try {
+  //       // Собираем точки из ключевых точек
+  //       const points1 = [];
+  //       const points2 = [];
+  //       for (let i = 0; i < matches.size(); i++) {
+  //         const match = matches.get(i);
+  //         const pt1 = keyPoints1.get(match.queryIdx).pt;
+  //         const pt2 = keyPoints2.get(match.trainIdx).pt;
 
-        // Проверяем, что точки корректны
-        if (
-          isFinite(pt1.x) &&
-          isFinite(pt1.y) &&
-          isFinite(pt2.x) &&
-          isFinite(pt2.y)
-        ) {
-          points1.push([pt1.x, pt1.y]);
-          points2.push([pt2.x, pt2.y]);
-        }
-      }
+  //         // Проверяем, что точки корректны
+  //         if (
+  //           isFinite(pt1.x) &&
+  //           isFinite(pt1.y) &&
+  //           isFinite(pt2.x) &&
+  //           isFinite(pt2.y)
+  //         ) {
+  //           points1.push([pt1.x, pt1.y]);
+  //           points2.push([pt2.x, pt2.y]);
+  //         }
+  //       }
 
-      // Проверяем, что осталось достаточно точек
-      if (points1.length < 4) {
-        console.error("Not enough valid points to compute homography.");
-        return matches; // Возвращаем все совпадения, если точек меньше 4
-      }
+  //       // Проверяем, что осталось достаточно точек
+  //       if (points1.length < 4) {
+  //         console.error("Not enough valid points to compute homography.");
+  //         return matches; // Возвращаем все совпадения, если точек меньше 4
+  //       }
 
-      // Преобразуем точки в матрицы
-      const srcPoints = cv.matFromArray(
-        points1.length,
-        1,
-        cv.CV_32FC2,
-        points1.flat()
-      );
-      const dstPoints = cv.matFromArray(
-        points2.length,
-        1,
-        cv.CV_32FC2,
-        points2.flat()
-      );
+  //       // Преобразуем точки в матрицы
+  //       const srcPoints = cv.matFromArray(
+  //         points1.length,
+  //         1,
+  //         cv.CV_32FC2,
+  //         points1.flat()
+  //       );
+  //       const dstPoints = cv.matFromArray(
+  //         points2.length,
+  //         1,
+  //         cv.CV_32FC2,
+  //         points2.flat()
+  //       );
 
-      // Находим гомографию
-      const homography = cv.findHomography(srcPoints, dstPoints, cv.RANSAC, 5);
+  //       // Находим гомографию
+  //       const homography = cv.findHomography(srcPoints, dstPoints, cv.RANSAC, 5);
 
-      // Проверяем, была ли найдена гомография
-      if (homography.empty()) {
-        console.error("Homography could not be computed.");
-        srcPoints.delete();
-        dstPoints.delete();
-        return matches; // Возвращаем все совпадения, если гомография не найдена
-      }
+  //       // Проверяем, была ли найдена гомография
+  //       if (homography.empty()) {
+  //         console.error("Homography could not be computed.");
+  //         srcPoints.delete();
+  //         dstPoints.delete();
+  //         return matches; // Возвращаем все совпадения, если гомография не найдена
+  //       }
 
-      // Создаем матрицу для выходных точек
-      const transformedPoints = new cv.Mat(
-        srcPoints.rows,
-        srcPoints.cols,
-        cv.CV_32FC2
-      );
+  //       // Создаем матрицу для выходных точек
+  //       const transformedPoints = new cv.Mat(
+  //         srcPoints.rows,
+  //         srcPoints.cols,
+  //         cv.CV_32FC2
+  //       );
 
-      // Применяем перспективное преобразование
-      cv.perspectiveTransform(srcPoints, transformedPoints, homography);
+  //       // Применяем перспективное преобразование
+  //       cv.perspectiveTransform(srcPoints, transformedPoints, homography);
 
-      const inliers = new cv.DMatchVector();
+  //       const inliers = new cv.DMatchVector();
 
-      // Фильтруем совпадения
-      for (let i = 0; i < matches.size(); i++) {
-        const match = matches.get(i);
-        const points = keyPoints2.get(match.trainIdx).pt;
+  //       // Фильтруем совпадения
+  //       for (let i = 0; i < matches.size(); i++) {
+  //         const match = matches.get(i);
+  //         const points = keyPoints2.get(match.trainIdx).pt;
 
-        // Получаем преобразованную точку
-        const transformedPt = [
-          transformedPoints.data32F[i * 2], // x-координата
-          transformedPoints.data32F[i * 2 + 1], // y-координата
-        ];
+  //         // Получаем преобразованную точку
+  //         const transformedPt = [
+  //           transformedPoints.data32F[i * 2], // x-координата
+  //           transformedPoints.data32F[i * 2 + 1], // y-координата
+  //         ];
 
-        // Вычисляем расстояние между преобразованной точкой и целевой точкой
-        const distance = Math.sqrt(
-          Math.pow(transformedPt[0] - points.x, 2) +
-            Math.pow(transformedPt[1] - points.y, 2)
-        );
+  //         // Вычисляем расстояние между преобразованной точкой и целевой точкой
+  //         const distance = Math.sqrt(
+  //           Math.pow(transformedPt[0] - points.x, 2) +
+  //             Math.pow(transformedPt[1] - points.y, 2)
+  //         );
 
-        // Если расстояние меньше порога, считаем это совпадением
-        if (distance < 5) {
-          inliers.push_back(match);
-        }
-      }
+  //         // Если расстояние меньше порога, считаем это совпадением
+  //         if (distance < 5) {
+  //           inliers.push_back(match);
+  //         }
+  //       }
 
-      // Освобождаем память
-      srcPoints.delete();
-      dstPoints.delete();
-      homography.delete();
-      transformedPoints.delete();
+  //       // Освобождаем память
+  //       srcPoints.delete();
+  //       dstPoints.delete();
+  //       homography.delete();
+  //       transformedPoints.delete();
 
-      return inliers;
-    } catch (error) {
-      console.error("Error in filterMatchesWithRANSAC:", error);
-      return new cv.DMatchVector();
-    }
-  };
+  //       return inliers;
+  //     } catch (error) {
+  //       console.error("Error in filterMatchesWithRANSAC:", error);
+  //       return new cv.DMatchVector();
+  //     }
+  //   };
 
   // Функция для сравнения изображений с использованием OpenCV
   const compareImage = async (scannedImageSrc: ImageType) => {
@@ -223,14 +223,14 @@ export const Scanner = () => {
         bfMatcher.match(scannedDescriptors, markDescriptors, matches);
 
         // Фильтруем совпадения с помощью RANSAC
-        const inliers = filterMatchesWithRANSAC(
-          scannedKeyPoints,
-          markKeyPoints,
-          matches
-        );
+        // const inliers = filterMatchesWithRANSAC(
+        //   scannedKeyPoints,
+        //   markKeyPoints,
+        //   matches
+        // );
 
         // // Оцениваем качество совпадения
-        const matchScore = inliers.size();
+        const matchScore = matches.size();
         if (matchScore > bestMatch.score) {
           bestMatch = { name: markPath, score: matchScore };
         }
@@ -249,7 +249,7 @@ export const Scanner = () => {
           `Best match: ${bestMatch.name} (Score: ${bestMatch.score})`
         );
         const id = bestMatch.name
-          ?.match(/Picture\d/g)?.[0]
+          ?.match(/Picture\d+/g)?.[0]
           .replace("Picture", "");
         setResultId(+id!);
         setSearchImage(bestMatch.name);
@@ -293,7 +293,7 @@ export const Scanner = () => {
     captureImage();
     handleCameraClose();
   };
-
+  console.log(resultId);
   const searchData = resultId && catalogMarks[resultId];
 
   return (
