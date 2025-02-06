@@ -18,7 +18,7 @@ export const HandbookCard: FC<HandbookCardProps> = ({
   const navigate = useNavigate();
 
   return (
-    <div className={styles.card} onClick={() => navigate(`${id}`)}>
+    <div className={styles.card} onClick={() => navigate(`/handbook/${id}`)}>
       <img src={src} alt={title} className={styles.image} />
       <div className={styles.textBlock}>
         <div className={styles.title}>{title}</div>

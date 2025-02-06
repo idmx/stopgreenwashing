@@ -3,7 +3,7 @@ import tree from "../../assets/tree.jpg";
 
 export const MainPage = () => {
   return (
-    <main>
+    <div>
       <section className={styles.mainBlock}>
         <article className={styles.article}>
           <h3 className={styles.sectionHeader}>В чем проблема?</h3>
@@ -60,6 +60,6 @@ export const MainPage = () => {
           </ul>
         </article>
       </section>
-    </main>
+    </div>
   );
 };

@@ -1,0 +1,15 @@
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: #fff;
+  padding: 20px 0;
+  background-color: #2f2c2c;
+  gap: 4px;
+}
+
+.link {
+  color: inherit;
+}

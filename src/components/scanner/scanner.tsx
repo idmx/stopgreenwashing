@@ -2,6 +2,11 @@ import { useState, useRef, ChangeEvent } from "react";
 import Webcam from "react-webcam";
 import cv from "@techstark/opencv-js";
 import styles from "./scanner.module.css";
+import { Modal } from "../modal";
+import { HandbookCard } from "../handbook-card";
+import { catalogMarks } from "../../data/catalog";
+import { Loader } from "../loader";
+import cn from "classnames";
 
 const marks = import.meta.glob("../../assets/marks/*.png", {
   query: { format: "webp;avif;jpg", width: "200;400;600;1200", picture: "" },
@@ -13,7 +18,9 @@ type ImageType = string | ArrayBuffer | null | undefined;
 type BestMatch = { name: string | null; score: number };
 
 export const Scanner = () => {
-  const [result, setResult] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [resultId, setResultId] = useState<number | null>(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [image, setImage] = useState<ImageType>(null); // Состояние для загруженного/снятого изображения
   const [searchImage, setSearchImage] = useState<string | null>(null); // Состояние для загруженного/снятого изображения
   const webcamRef = useRef<Webcam>(null);
@@ -151,6 +158,9 @@ export const Scanner = () => {
 
   // Функция для сравнения изображений с использованием OpenCV
   const compareImage = async (scannedImageSrc: ImageType) => {
+    setIsLoading(true);
+    setResultId(null);
+
     if (!cv) {
       console.error("OpenCV is not loaded yet.");
       return;
@@ -233,12 +243,18 @@ export const Scanner = () => {
         matches.delete();
       }
       // Выводим результат
-      console.log(bestMatch);
+      console.log();
       if (bestMatch.name) {
-        setResult(`Best match: ${bestMatch.name} (Score: ${bestMatch.score})`);
+        console.log(
+          `Best match: ${bestMatch.name} (Score: ${bestMatch.score})`
+        );
+        const id = bestMatch.name
+          ?.match(/Picture\d/g)?.[0]
+          .replace("Picture", "");
+        setResultId(+id!);
         setSearchImage(bestMatch.name);
       } else {
-        setResult("No match found");
+        console.log("No match found");
       }
 
       // Освобождаем память
@@ -249,6 +265,7 @@ export const Scanner = () => {
     } catch (error) {
       console.error("Error comparing images:", error);
     }
+    setIsLoading(false);
   };
 
   // Функция для загрузки изображения в OpenCV
@@ -270,41 +287,98 @@ export const Scanner = () => {
     });
   };
 
+  const handleCameraOpen = () => setIsCameraOpen(true);
+  const handleCameraClose = () => setIsCameraOpen(false);
+  const handleClickProto = () => {
+    captureImage();
+    handleCameraClose();
+  };
+
+  const searchData = resultId && catalogMarks[resultId];
+
   return (
-    <div>
-      <h1>Scanner</h1>
+    <div className={styles.scanner}>
       <div>
+        <div className={styles.instruction}>
+          <p className={styles.instructionTitle}>Как использовать сканер:</p>
+          <ul className={styles.instructionList}>
+            <li className={styles.instructionItem}>
+              Cфотографировать знак так, чтобы его изображение занимало все
+              доступно пространство
+            </li>
+            <li className={styles.instructionItem}>
+              После получения результата можно ознакомиться с краткой
+              характеристикой маркировки или перейти на страницу с более
+              подробным описанием
+            </li>
+            <li className={styles.instructionItem}>
+              Если маркировка не была найдена в справочнике, у вас есть
+              возможность оставить обращение на почту, после вашего письма будет
+              проведен анализ маркировки, при ее достоверности она будет
+              включена в справочник сайта.
+            </li>
+          </ul>
+        </div>
+        <div className={styles.buttonBlock}>
+          <button
+            onClick={handleCameraOpen}
+            className={cn(styles.button, styles.cameraButton)}
+          >
+            Сделать фото маркировки
+          </button>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className={styles.button}
+            id="file-upload"
+          />
+          <label className={styles.button} htmlFor="file-upload">
+            Загрузить фото маркировки
+          </label>
+        </div>
+      </div>
+      {image && (
+        <div className={styles.searchBlock}>
+          <div className={styles.resultBlock}>
+            <span className={styles.searchTitle}>Идет поиск по фото:</span>
+            <img
+              src={image as string}
+              alt="Captured"
+              className={styles.photo}
+            />
+          </div>
+          <div className={styles.resultBlock}>
+            <span className={styles.searchTitle}>Результат поиска</span>
+            {searchData && !isLoading ? (
+              <HandbookCard
+                src={searchImage as string}
+                country={searchData.country}
+                id={resultId - 1}
+                title={searchData.title}
+              />
+            ) : isLoading ? (
+              <Loader size="l" />
+            ) : (
+              <p className={styles.noResult}>
+                Данная маркировка является фальшивой или была некорректно
+                просканирована. Попробуйте просканировать маркировку повторно
+                или свяжитесь с нами для уточнения информации.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      <Modal onClose={handleCameraClose} isOpen={isCameraOpen}>
         <Webcam
           audio={false}
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           className={styles.camera}
         />
-        <button onClick={captureImage}>Capture Photo</button>
-      </div>
-      <div>
-        <h2>Or upload an image:</h2>
-        <input type="file" accept="image/*" onChange={handleImageUpload} />
-      </div>
-      {image && (
-        <div>
-          <h2>Captured/Uploaded Image:</h2>
-          <img
-            src={image as string}
-            alt="Captured"
-            style={{ width: "300px", height: "auto" }}
-          />
-        </div>
-      )}
-      <div>
-        <h2>Result:</h2>
-        <span>{result}</span>
-        <img
-          src={searchImage as string}
-          alt="Captured"
-          style={{ width: "300px", height: "auto" }}
-        />
-      </div>
+        <button onClick={handleClickProto}>Сделать фото</button>
+      </Modal>
     </div>
   );
 };

@@ -1,4 +1,100 @@
+.scanner {
+  display: grid;
+  gap: 20px 4px;
+  justify-content: space-between;
+  padding: 20px;
+
+  @media screen and (max-width: 1400px) {
+    grid-template-columns: 1fr;
+  }
+}
+
 .camera {
   width: 100%;
   max-width: 600px;
+}
+
+.cameraButton {
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+}
+
+.instructionTitle,
+.searchTitle {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.instructionList {
+  padding: 0 10px;
+}
+
+.buttonBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.button {
+  font-family: "Merriweather", serif;
+  transition: opacity 0.5s;
+  cursor: pointer;
+  border: 1px solid #7bd061;
+  border-radius: 16px;
+  padding: 8px;
+  background-color: #7bd061;
+  font-size: 16px;
+  text-align: center;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.searchBlock {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 10px;
+  gap: 10px;
+  /* width: max-content; */
+
+  @media screen and (max-width: 1400px) {
+    justify-items: start;
+  }
+
+  @media screen and (max-width: 780px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.resultBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  width: 100%;
+}
+
+.noResult {
+  width: 100%;
+  text-align: justify;
+}
+
+.uploadPhoto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  max-width: 400px;
+  border-radius: 10px;
+  background-color: #fff;
 }

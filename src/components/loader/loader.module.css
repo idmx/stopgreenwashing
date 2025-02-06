@@ -1,0 +1,23 @@
+.loading {
+  animation: loading 1s;
+  animation-iteration-count: infinite;
+
+  &.m {
+    width: 28px;
+    height: 28px;
+  }
+
+  &.l {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@keyframes loading {
+  from {
+    rotate: 0;
+  }
+  to {
+    rotate: 360deg;
+  }
+}
